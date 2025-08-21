@@ -53,7 +53,6 @@ function App() {
    */
   const handleAddressSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("hello: ", postCode, houseNumber);
     resetFormStatus();
     setLoading(true);
 

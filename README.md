@@ -22,7 +22,7 @@ Here is a list of all the TODO's to make life a bit easier:
 ### Styling
 
 - [x] Add the 'Roboto' font from Google fonts and add it as a global CSS var called `--font-primary`.
-- [ ] Make application responsive. It is already for the most part, but it is not optimal for smaller screens.
+- [x] Make application responsive. It is already for the most part, but it is not optimal for smaller screens.
 - [x] Create separate styles for .primary and .secondary variants of the button component. Use the brand color #413ef7 for both of these buttons.
 
 ### React
