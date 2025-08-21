@@ -31,6 +31,11 @@ export default function useAddressBook() {
       dispatch(removeAddress(id));
       updateDatabase();
     },
+    /** Remove all addresses from the redux store */
+    removeAllAddress: () => {
+      dispatch(updateAddresses([]));
+      updateDatabase();
+    },
     /** Loads saved addresses from the indexedDB */
     loadSavedAddresses: async () => {
       const saved: RawAddressModel[] | null = await databaseService.getItem(

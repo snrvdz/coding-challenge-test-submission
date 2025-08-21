@@ -26,10 +26,10 @@ function App() {
    * - Remove all individual onChange handlers, like handlePostCodeChange for example
    */
   const {
-    fields: { postCode, houseNumber, firstName, lastName },
+    fields: { postCode, houseNumber, firstName, lastName, selectedAddress },
     onFieldChange,
+    onFieldsClear,
   } = useFormFields();
-  const [selectedAddress, setSelectedAddress] = React.useState("");
   /**
    * Results states
    */
@@ -39,11 +39,7 @@ function App() {
   /**
    * Redux actions
    */
-  const { addAddress } = useAddressBook();
-
-  const handleSelectedAddressChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => setSelectedAddress(e.target.value);
+  const { addAddress, removeAllAddress } = useAddressBook();
 
   /** TODO: Fetch addresses based on houseNumber and postCode using the local BE api
    * - Example URL of API: ${process.env.NEXT_PUBLIC_URL}/api/getAddresses?postcode=1345&streetnumber=350
@@ -68,8 +64,10 @@ function App() {
         if (responseJson.status === "error")
           setError(responseJson.errormessage);
         else {
-          const transformedAddress = responseJson.details.map((address: RawAddressModel) => transformAddress(address));
-          
+          const transformedAddress = responseJson.details.map(
+            (address: RawAddressModel) => transformAddress(address)
+          );
+
           setAddresses(transformedAddress);
         }
       } catch (error) {
@@ -89,6 +87,12 @@ function App() {
     setAddresses([]);
   };
 
+  const clearAllFields = () => {
+    resetFormStatus();
+    onFieldsClear();
+    removeAllAddress();
+  };
+
   /** TODO: Add basic validation to ensure first name and last name fields aren't empty
    * Use the following error message setError("First name and last name fields mandatory!")
    */
@@ -102,6 +106,11 @@ function App() {
       return;
     }
 
+    if (!firstName || !lastName) {
+      setError("First name and last name fields mandatory!");
+      return;
+    }
+
     const foundAddress = addresses.find(
       (address) => address.id === selectedAddress
     );
@@ -111,6 +120,7 @@ function App() {
       return;
     }
 
+    setError(undefined);
     addAddress({ ...foundAddress, firstName, lastName });
   };
 
@@ -166,7 +176,12 @@ function App() {
                 name="selectedAddress"
                 id={address.id}
                 key={address.id}
-                onChange={handleSelectedAddressChange}
+                onChange={(e) =>
+                  onFieldChange({
+                    fieldName: "selectedAddress",
+                    fieldValue: e.target.value,
+                  })
+                }
               >
                 <Address {...address} />
               </Radio>
@@ -217,6 +232,9 @@ function App() {
         On Click, it must clear all form fields, remove all search results and clear all prior
         error messages
         */}
+        <Button onClick={clearAllFields} variant="outline">
+          Clear all fields
+        </Button>
       </Section>
 
       <Section variant="dark">

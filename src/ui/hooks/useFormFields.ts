@@ -1,13 +1,15 @@
 import { useState } from "react";
 
+const initialFieldValues = {
+  postCode: "",
+  houseNumber: "",
+  firstName: "",
+  lastName: "",
+  selectedAddress: "",
+};
+
 export default function useFormFields() {
-  const [fields, setFields] = useState({
-    postCode: "",
-    houseNumber: "",
-    firstName: "",
-    lastName: "",
-    selectedAddress: "",
-  });
+  const [fields, setFields] = useState(initialFieldValues);
 
   function onFieldChange({
     fieldName,
@@ -19,8 +21,13 @@ export default function useFormFields() {
     setFields((prev) => ({ ...prev, [fieldName]: fieldValue }));
   }
 
+  function onFieldsClear() {
+    setFields(initialFieldValues);
+  }
+
   return {
-    onFieldChange,
     fields,
+    onFieldChange,
+    onFieldsClear,
   };
 }

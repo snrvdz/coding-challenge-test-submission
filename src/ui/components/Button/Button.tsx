@@ -11,7 +11,7 @@ interface ButtonProps {
   children: React.ReactNode;
 }
 
-const Spinner = () => <div className={$.spinner}/>
+const Spinner = () => <div data-testid="loading-spinner" className={$.spinner}/>
 
 const Button: FunctionComponent<ButtonProps> = ({
   children,
