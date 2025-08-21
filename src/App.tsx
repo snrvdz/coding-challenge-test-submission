@@ -13,6 +13,7 @@ import { Address as AddressType } from "./types";
 import useFormFields from "@/hooks/useFormFields";
 import ErrorMessage from "@/components/Error/ErrorMessage";
 import transformAddress, { RawAddressModel } from "./core/models/address";
+import Form from "@/components/Form/Form";
 
 const BASE_URL = process.env.NEXT_PUBLIC_URL || "";
 
@@ -50,7 +51,9 @@ function App() {
    * - Ensure to clear previous search results on each click
    * - Bonus: Add a loading state in the UI while fetching addresses
    */
-  const handleAddressSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
+  const handleAddressSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("hello: ", postCode, houseNumber);
     resetFormStatus();
     setLoading(true);
 
@@ -78,8 +81,6 @@ function App() {
     };
 
     fetchData();
-
-    e.preventDefault();
   };
 
   const resetFormStatus = () => {
@@ -135,40 +136,36 @@ function App() {
           </small>
         </h1>
         {/* TODO: Create generic <Form /> component to display form rows, legend and a submit button  */}
-        <form onSubmit={handleAddressSubmit}>
-          <fieldset>
-            <legend>🏠 Find an address</legend>
-            <div className={styles.formRow}>
-              <InputText
-                name="postCode"
-                onChange={(e) =>
-                  onFieldChange({
-                    fieldName: "postCode",
-                    fieldValue: e.target.value,
-                  })
-                }
-                placeholder="Post Code"
-                value={postCode}
-              />
-            </div>
-            <div className={styles.formRow}>
-              <InputText
-                name="houseNumber"
-                onChange={(e) =>
-                  onFieldChange({
-                    fieldName: "houseNumber",
-                    fieldValue: e.target.value,
-                  })
-                }
-                value={houseNumber}
-                placeholder="House number"
-              />
-            </div>
-            <Button type="submit" loading={loading}>
-              Find
-            </Button>
-          </fieldset>
-        </form>
+        <Form
+          label={"🏠 Find an address"}
+          loading={loading}
+          formEntries={[
+            {
+              name: "postCode",
+              placeholder: "Post Code",
+              value: postCode,
+              onChange: (e: { target: { value: string } }) => {
+                onFieldChange({
+                  fieldName: "postCode",
+                  fieldValue: e.target.value,
+                });
+              },
+            },
+            {
+              name: "houseNumber",
+              placeholder: "House number",
+              value: houseNumber,
+              onChange: (e: { target: { value: string } }) => {
+                onFieldChange({
+                  fieldName: "houseNumber",
+                  fieldValue: e.target.value,
+                });
+              },
+            },
+          ]}
+          onFormSubmit={handleAddressSubmit}
+          submitText={"Find"}
+        />
         {addresses.length > 0 &&
           addresses.map((address) => {
             return (
@@ -189,38 +186,36 @@ function App() {
           })}
         {/* TODO: Create generic <Form /> component to display form rows, legend and a submit button  */}
         {selectedAddress && (
-          <form onSubmit={handlePersonSubmit}>
-            <fieldset>
-              <legend>✏️ Add personal info to address</legend>
-              <div className={styles.formRow}>
-                <InputText
-                  name="firstName"
-                  placeholder="First name"
-                  onChange={(e) =>
-                    onFieldChange({
-                      fieldName: "firstName",
-                      fieldValue: e.target.value,
-                    })
-                  }
-                  value={firstName}
-                />
-              </div>
-              <div className={styles.formRow}>
-                <InputText
-                  name="lastName"
-                  placeholder="Last name"
-                  onChange={(e) =>
-                    onFieldChange({
-                      fieldName: "lastName",
-                      fieldValue: e.target.value,
-                    })
-                  }
-                  value={lastName}
-                />
-              </div>
-              <Button type="submit">Add to addressbook</Button>
-            </fieldset>
-          </form>
+          <Form
+            label={"✏️ Add personal info to address"}
+            loading={loading}
+            formEntries={[
+              {
+                name: "firstName",
+                placeholder: "First name",
+                value: firstName,
+                onChange: (e: { target: { value: string } }) => {
+                  onFieldChange({
+                    fieldName: "firstName",
+                    fieldValue: e.target.value,
+                  });
+                },
+              },
+              {
+                name: "lastName",
+                placeholder: "Last name",
+                value: lastName,
+                onChange: (e: { target: { value: string } }) => {
+                  onFieldChange({
+                    fieldName: "lastName",
+                    fieldValue: e.target.value,
+                  });
+                },
+              },
+            ]}
+            onFormSubmit={handlePersonSubmit}
+            submitText={"Add to addressbook"}
+          />
         )}
 
         {/* TODO: Create an <ErrorMessage /> component for displaying an error message */}
