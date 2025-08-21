@@ -32,6 +32,7 @@ function App() {
   /**
    * Results states
    */
+  const [loading, setLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<undefined | string>(undefined);
   const [addresses, setAddresses] = React.useState<AddressType[]>([]);
   /**
@@ -53,7 +54,8 @@ function App() {
    * - Bonus: Add a loading state in the UI while fetching addresses
    */
   const handleAddressSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
-    setError(undefined);
+    resetFormStatus();
+    setLoading(true);
 
     const fetchData = async () => {
       try {
@@ -64,18 +66,22 @@ function App() {
 
         if (responseJson.status === "error")
           setError(responseJson.errormessage);
-        
-        else {
-          setAddresses(responseJson.details);
-        }
+        else setAddresses(responseJson.details);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
 
     e.preventDefault();
+  };
+
+  const resetFormStatus = () => {
+    setError(undefined);
+    setAddresses([]);
   };
 
   /** TODO: Add basic validation to ensure first name and last name fields aren't empty
@@ -143,7 +149,9 @@ function App() {
                 placeholder="House number"
               />
             </div>
-            <Button type="submit">Find</Button>
+            <Button type="submit" loading={loading}>
+              Find
+            </Button>
           </fieldset>
         </form>
         {addresses.length > 0 &&

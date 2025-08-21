@@ -11,6 +11,8 @@ interface ButtonProps {
   children: React.ReactNode;
 }
 
+const Spinner = () => <div className={$.spinner}/>
+
 const Button: FunctionComponent<ButtonProps> = ({
   children,
   onClick,
@@ -24,11 +26,11 @@ const Button: FunctionComponent<ButtonProps> = ({
       // - Must have a condition to set the '.primary' className
       // - Must have a condition to set the '.secondary' className
       // - Display loading spinner per demo video. NOTE: add data-testid="loading-spinner" for spinner element (used for grading)
-      className={$.button}
+      className={`${$.button} ${$[variant]}`}
       type={type}
       onClick={onClick}
     >
-      {children}
+      {loading && <Spinner />}{children}
     </button>
   );
 };
