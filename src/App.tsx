@@ -12,6 +12,7 @@ import styles from "./App.module.css";
 import { Address as AddressType } from "./types";
 import useFormFields from "@/hooks/useFormFields";
 import ErrorMessage from "@/components/Error/ErrorMessage";
+import transformAddress, { RawAddressModel } from "./core/models/address";
 
 const BASE_URL = process.env.NEXT_PUBLIC_URL || "";
 
@@ -66,7 +67,11 @@ function App() {
 
         if (responseJson.status === "error")
           setError(responseJson.errormessage);
-        else setAddresses(responseJson.details);
+        else {
+          const transformedAddress = responseJson.details.map((address: RawAddressModel) => transformAddress(address));
+          
+          setAddresses(transformedAddress);
+        }
       } catch (error) {
         console.error(error);
       } finally {
