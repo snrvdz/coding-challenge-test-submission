@@ -14,3 +14,10 @@
   --color-text: #fff;
   --color-text-light: #878b9a;
 }
+
+@media only screen and (max-width: 425px) {
+  .section {
+    margin: 1rem auto;
+    padding: 1em 1.5em;
+  }
+}

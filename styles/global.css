@@ -1,19 +1,26 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
 }
 
 /* TODO: Add the 'Roboto' font from Google fonts and add it as a global CSS var called `--font-primary` */
 /* TODO: Make application responsive. It is already for the most part, but it is not optimal for smaller screens.
 * - Making the application responsive using the Mobile First principle.
 */
+
+@font-face {
+  font-family: "Roboto";
+  src: url("./Roboto.ttf");
+}
 
 :root {
   --border-radius-default: 4px;
@@ -24,14 +31,13 @@ code {
   --color-brand: #413ef7;
   --color-text: #141925;
   --color-text-light: #72787d;
-  --width-input: 20rem;
+  --width-input: 30rem;
   --width-content: 30rem;
 
   /* solution variables */
-  --font-primary: 'Roboto', sans-serif;
+  --font-primary: "Roboto", sans-serif;
   --color-error: #f73e3e;
   --color-text-error: #ffb8b8;
-
 }
 
 * {
