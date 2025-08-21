@@ -10,6 +10,10 @@ import useAddressBook from "@/hooks/useAddressBook";
 
 import styles from "./App.module.css";
 import { Address as AddressType } from "./types";
+import useFormFields from "@/hooks/useFormFields";
+import ErrorMessage from "@/components/Error/ErrorMessage";
+
+const BASE_URL = process.env.NEXT_PUBLIC_URL || "";
 
 function App() {
   /**
@@ -20,10 +24,10 @@ function App() {
    * - Remove all individual React.useState
    * - Remove all individual onChange handlers, like handlePostCodeChange for example
    */
-  const [postCode, setPostCode] = React.useState("");
-  const [houseNumber, setHouseNumber] = React.useState("");
-  const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
+  const {
+    fields: { postCode, houseNumber, firstName, lastName },
+    onFieldChange,
+  } = useFormFields();
   const [selectedAddress, setSelectedAddress] = React.useState("");
   /**
    * Results states
@@ -34,21 +38,6 @@ function App() {
    * Redux actions
    */
   const { addAddress } = useAddressBook();
-
-  /**
-   * Text fields onChange handlers
-   */
-  const handlePostCodeChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setPostCode(e.target.value);
-
-  const handleHouseNumberChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setHouseNumber(e.target.value);
-
-  const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setFirstName(e.target.value);
-
-  const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setLastName(e.target.value);
 
   const handleSelectedAddressChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -64,6 +53,28 @@ function App() {
    * - Bonus: Add a loading state in the UI while fetching addresses
    */
   const handleAddressSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
+    setError(undefined);
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `${BASE_URL}/api/getAddresses?postcode=${postCode}&streetnumber=${houseNumber}`
+        );
+        const responseJson = await response.json();
+
+        if (responseJson.status === "error")
+          setError(responseJson.errormessage);
+        
+        else {
+          setAddresses(responseJson.details);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+
     e.preventDefault();
   };
 
@@ -109,7 +120,12 @@ function App() {
             <div className={styles.formRow}>
               <InputText
                 name="postCode"
-                onChange={handlePostCodeChange}
+                onChange={(e) =>
+                  onFieldChange({
+                    fieldName: "postCode",
+                    fieldValue: e.target.value,
+                  })
+                }
                 placeholder="Post Code"
                 value={postCode}
               />
@@ -117,7 +133,12 @@ function App() {
             <div className={styles.formRow}>
               <InputText
                 name="houseNumber"
-                onChange={handleHouseNumberChange}
+                onChange={(e) =>
+                  onFieldChange({
+                    fieldName: "houseNumber",
+                    fieldValue: e.target.value,
+                  })
+                }
                 value={houseNumber}
                 placeholder="House number"
               />
@@ -147,7 +168,12 @@ function App() {
                 <InputText
                   name="firstName"
                   placeholder="First name"
-                  onChange={handleFirstNameChange}
+                  onChange={(e) =>
+                    onFieldChange({
+                      fieldName: "firstName",
+                      fieldValue: e.target.value,
+                    })
+                  }
                   value={firstName}
                 />
               </div>
@@ -155,7 +181,12 @@ function App() {
                 <InputText
                   name="lastName"
                   placeholder="Last name"
-                  onChange={handleLastNameChange}
+                  onChange={(e) =>
+                    onFieldChange({
+                      fieldName: "lastName",
+                      fieldValue: e.target.value,
+                    })
+                  }
                   value={lastName}
                 />
               </div>
@@ -165,7 +196,7 @@ function App() {
         )}
 
         {/* TODO: Create an <ErrorMessage /> component for displaying an error message */}
-        {error && <div className="error">{error}</div>}
+        {error && <ErrorMessage errorMessage={error} />}
 
         {/* TODO: Add a button to clear all form fields. 
         Button must look different from the default primary button, see design. 

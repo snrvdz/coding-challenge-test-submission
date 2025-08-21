@@ -26,6 +26,12 @@ code {
   --color-text-light: #72787d;
   --width-input: 20rem;
   --width-content: 30rem;
+
+  /* solution variables */
+  --font-primary: 'Roboto', sans-serif;
+  --color-error: #f73e3e;
+  --color-text-error: #ffb8b8;
+
 }
 
 * {
